@@ -91,6 +91,15 @@ offset_right = 184.0
 offset_bottom = 232.0
 text = "Out"
 
+[node name="Fill" type="Button" parent="WorkField/HUD"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 8.0
+offset_right = 242.0
+offset_bottom = 71.0
+theme_override_font_sizes/font_size = 40
+text = "Fill"
+
 [node name="FileDialog" type="FileDialog" parent="WorkField"]
 size = Vector2i(407, 162)
 
@@ -98,4 +107,5 @@ size = Vector2i(407, 162)
 [connection signal="pressed" from="WorkField/HUD/Clear" to="WorkField" method="_on_clear_pressed"]
 [connection signal="item_selected" from="WorkField/HUD/Colour" to="WorkField" method="_on_colour_item_selected"]
 [connection signal="pressed" from="WorkField/HUD/Save" to="WorkField" method="_on_save_pressed"]
+[connection signal="pressed" from="WorkField/HUD/Fill" to="WorkField" method="_on_fill_pressed"]
 [connection signal="file_selected" from="WorkField/FileDialog" to="WorkField" method="_on_file_dialog_file_selected"]
