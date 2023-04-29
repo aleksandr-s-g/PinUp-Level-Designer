@@ -18,3 +18,4 @@ func _on_item_rect_changed():
 	
 func resized():
 	print("size changed to ", get_viewport().get_visible_rect().size)
+	
