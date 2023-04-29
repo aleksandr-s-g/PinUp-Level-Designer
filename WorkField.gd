@@ -58,7 +58,7 @@ func _draw():
 	$HUD.position.x = work_width
 	$HUD.size.y = work_height
 	$HUD.size.x = get_viewport().get_visible_rect().size.x - work_width
-	print("draw")
+	#print("draw")
 	
 	
 func is_block_exist(x:int,y:int):
@@ -85,17 +85,21 @@ func add_blocks():
 		
 func _input(event):
    # Mouse in viewport coordinates.
-
-	if event is InputEventMouseButton and event.is_pressed():
+	#print(event)
+	#if event is InputEventMouseMotion and event.get_pressure() > 0.1:
+		#print(event)
+		#print(event.get_pressure(), event.position, event.get_button_mask())
+	if (event is InputEventMouseButton and event.is_pressed()) or (event is InputEventMouseMotion and event.get_pressure() > 0.1):#event.pressure > 0.1: #
 		if event.position.x>work_width or event.position.y > work_height:
 			return
 		var click_x = int(event.position.x*10/work_width)
 		var click_y = 19-int(event.position.y*20/work_height)
 		#print("Mouse Click at: ", event.position, click_x," ", click_y)
-		if event.as_text() == 'Left Mouse Button':
-			print("Left Mouse Click at: ", event.position, click_x," ", click_y)
+		if event.as_text() == 'Left Mouse Button' or event.get_button_mask() == 1:
+			#print("Left Mouse Click at: ", event.position, click_x," ", click_y)
 			if is_block_exist(click_x, click_y):
-				print ('already_exist')
+				pass
+				#print ('already_exist')
 			else:
 				var colour_to_draw = ''
 				if selected_colour == 'auto':
@@ -108,15 +112,16 @@ func _input(event):
 				var new_block = {'colour':colour_to_draw, 'x':click_x, 'y':click_y}
 				cur_lab_part['blocks'].append(new_block)
 				#create_block(Vector2(click_y, click_x), 'red')
-			print (cur_lab_part)
-		if event.as_text() == 'Right Mouse Button':
-			print("Right Mouse Click at: ", event.position, click_x," ", click_y)
+			#print (cur_lab_part)
+		if event.as_text() == 'Right Mouse Button'or event.get_button_mask() == 2:
+			#print("Right Mouse Click at: ", event.position, click_x," ", click_y)
 			delete_blocks()
 			if is_block_exist(click_x, click_y):
 				cur_lab_part['blocks'].erase(is_block_exist(click_x, click_y))
 			else:
-				print ('not_exist')
-			print (cur_lab_part)
+				pass
+				#print ('not_exist')
+			#print (cur_lab_part)
 		#print(event.as_text())
 		_draw()
 

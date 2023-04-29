@@ -13,9 +13,10 @@ func _process(delta):
 
 
 func _on_item_rect_changed():
-	print("size changed")
+	#print("size changed")
 	pass # Replace with function body.
 	
 func resized():
-	print("size changed to ", get_viewport().get_visible_rect().size)
+	pass
+	#print("size changed to ", get_viewport().get_visible_rect().size)
 	
