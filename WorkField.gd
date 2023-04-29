@@ -3,7 +3,7 @@ var work_height = 0
 var work_width = 0
 var cell_size = 0
 var cur_lab_part = {'in':0,'out':0, 'blocks':[]}
-var selected_colour = 'blue'
+var selected_colour = 'auto'
 @onready var BlueBox = preload("res://blue_box.tscn")
 @onready var RedBox = preload("res://red_box.tscn")
 var last_path = ''
@@ -97,7 +97,15 @@ func _input(event):
 			if is_block_exist(click_x, click_y):
 				print ('already_exist')
 			else:
-				var new_block = {'colour':selected_colour, 'x':click_x, 'y':click_y}
+				var colour_to_draw = ''
+				if selected_colour == 'auto':
+					if click_x<5:
+						colour_to_draw = 'red'
+					else:
+						colour_to_draw = 'blue'
+				else:
+					colour_to_draw = selected_colour
+				var new_block = {'colour':colour_to_draw, 'x':click_x, 'y':click_y}
 				cur_lab_part['blocks'].append(new_block)
 				#create_block(Vector2(click_y, click_x), 'red')
 			print (cur_lab_part)
@@ -124,6 +132,8 @@ func _on_colour_item_selected(index):
 		selected_colour = 'blue'
 	elif index == 1:
 		selected_colour = 'red'
+	elif index == 2:
+		selected_colour = 'auto'
 	pass # Replace with function body.
 
 
