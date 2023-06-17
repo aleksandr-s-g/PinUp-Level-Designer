@@ -8,11 +8,11 @@ var selected_colour = 'auto'
 @onready var BlueBox = preload("res://blue_box.tscn")
 @onready var RedBox = preload("res://red_box.tscn")
 @onready var Coin = preload("res://coin.tscn")
-var last_path = ''
+var last_path = 'results/lab01.json'
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$FileDialog.current_path = 'results/lab01.json'
+	$FileDialog.current_path = last_path
 	pass # Replace with function body.
 
 
@@ -61,9 +61,19 @@ func create_coin(pos):
 
 
 func _draw():
-	work_width = get_viewport().get_visible_rect().size.x*0.8
-	cell_size = work_width/10
-	work_height = cell_size*20
+	var hud_size = 185
+	var calc_w = get_viewport().get_visible_rect().size.x-hud_size
+	var calc_h = get_viewport().get_visible_rect().size.y
+	
+	if calc_h > calc_w *2:
+		work_width = get_viewport().get_visible_rect().size.x-hud_size
+		cell_size = work_width/10
+		work_height = cell_size*20
+	else:
+		work_height = calc_h
+		cell_size = work_height/20
+		work_width = cell_size * 10
+		
 	$ColorRect.size.y = work_height
 	$ColorRect.size.x = work_width
 	for i in range (10):
@@ -179,17 +189,19 @@ func _on_colour_item_selected(index):
 
 
 func _on_save_pressed():
+	$FileDialog.current_path = last_path
 	$FileDialog.show()
 	pass # Replace with function body.
 
 
 func save_lab_part(path):
-	cur_lab_part['in'] = int($HUD/In.text)
-	cur_lab_part['out'] = int($HUD/Out.text)
+	cur_lab_part['in'] = int($HUD/BoxContainer/InBox/In.text)
+	cur_lab_part['out'] = int($HUD/BoxContainer/OutBox/Out.text)
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	var content = JSON.stringify(cur_lab_part)
 	file.store_string(content)
 	file.close()
+	last_path = path
 
 func _on_file_dialog_file_selected(path):
 #	var file = File.new()
@@ -212,4 +224,43 @@ func _on_fill_pressed():
 	#var new_full_lab_part = full_lab_part
 	#cur_lab_part = full_lab_part
 	_draw()
+	pass # Replace with function body.
+
+
+func _on_load_pressed():
+	print('loading')
+	$LoadFileDialog.current_path = last_path
+	$LoadFileDialog.show()
+
+	pass # Replace with function body.
+
+
+func _on_load_file_dialog_file_selected(path):
+	cur_lab_part['blocks'] = []
+	cur_lab_part['coins'] = []
+	#var lab_part_random_file_name = lab_parts_file_list[randi() % lab_parts_file_list.size()]
+	print('loading ', path)
+	last_path = path
+	var lab_part_file = FileAccess.open(path, FileAccess.READ)
+	var json_string = lab_part_file.get_line()
+	var json_object = JSON.new()
+	json_object.parse(json_string)
+	var loaded_lab_part = json_object.get_data()
+	if 'blocks' in loaded_lab_part:
+		cur_lab_part['blocks'] = loaded_lab_part['blocks']
+		
+	if 'coins' in loaded_lab_part:
+		cur_lab_part['coins'] = loaded_lab_part['coins']
+	
+	print (loaded_lab_part)
+	if 'in' in loaded_lab_part:
+		$HUD/BoxContainer/InBox/In.text = str(loaded_lab_part['in'])
+		
+	if 'out' in loaded_lab_part:
+		$HUD/BoxContainer/OutBox/Out.text = str(loaded_lab_part['out'])
+	
+	_draw()
+	#print('loading ',lab_part_random_file_name)
+	#return json_object.get_data()
+	
 	pass # Replace with function body.
